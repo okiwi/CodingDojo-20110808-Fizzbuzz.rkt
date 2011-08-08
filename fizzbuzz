@@ -1,0 +1,63 @@
+#lang racket
+
+(require rackunit)
+
+(define (fizzbuzz nombre)
+  (define (multiple? diviseur)
+    (equal? (modulo nombre diviseur) 0)
+)
+  
+  (cond [(multiple? 15) "fizzbuzz"]
+        [(multiple? 3) "fizz"] 
+        [(multiple? 5) "buzz"]
+        [else (number->string nombre) ]
+  )
+)
+
+(define (listfizzbuzz-ok iter)
+  (if (eq? 1 iter)
+      (list (fizzbuzz 1))
+      (append (listfizzbuzz (- iter 1)) (list (fizzbuzz iter)) )
+      )
+  )
+
+(define (listfizzbuzz iter)
+  (build-list
+   iter
+   (lambda (x) (fizzbuzz (+ x 1)))))
+
+(define (testfizz nombre expected)
+  (check-equal? (fizzbuzz nombre) expected)
+)
+
+(test-case 
+"Peut donner 1"
+ (testfizz 1 "1"))
+
+(test-case
+ "Peut donner 2"
+ (testfizz 2 "2"))
+
+(test-case 
+ "Peut donner fizz"
+ (testfizz 3 "fizz"))
+
+(test-case 
+ "Peut donner fizz"
+ (testfizz 6 "fizz"))
+
+(test-case
+ "peut donner buzz"
+ (testfizz 5 "buzz"))
+
+(test-case
+ "Peut donner fizzbuzz"
+ (testfizz 15 "fizzbuzz"))
+
+(test-case
+ "Liste des fizzbuzz"
+ (check-equal? (listfizzbuzz 2) (list "1" "2")))
+
+(test-case
+ "Liste des undeuxfizz"
+ (check-equal? (listfizzbuzz 3) (list "1" "2" "fizz")))
